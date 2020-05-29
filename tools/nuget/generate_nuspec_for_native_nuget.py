@@ -11,15 +11,23 @@ def parse_arguments():
                                                  "(for hosting native shared library artifacts)",
                                      usage='')
     # Main arguments
-    parser.add_argument("--package_name", required=True, help="ORT package name. Eg: Microsoft.ML.OnnxRuntime.Gpu")
-    parser.add_argument("--package_version", required=True, help="ORT package version. Eg: 1.0.0")
+    parser.add_argument("--package_name", required=True,
+                        help="ORT package name. Eg: Microsoft.ML.OnnxRuntime.Gpu")
+    parser.add_argument("--package_version", required=True,
+                        help="ORT package version. Eg: 1.0.0")
     parser.add_argument("--target_architecture", required=True, help="Eg: x64")
-    parser.add_argument("--build_config", required=True, help="Eg: RelWithDebInfo")
-    parser.add_argument("--ort_build_path", required=True, help="ORT build directory.")
-    parser.add_argument("--native_build_path", required=True, help="Native build output directory.")
-    parser.add_argument("--packages_path", required=True, help="Nuget packages output directory.")
-    parser.add_argument("--sources_path", required=True, help="OnnxRuntime source code root.")
-    parser.add_argument("--commit_id", required=True, help="The last commit id included in this package.")
+    parser.add_argument("--build_config", required=True,
+                        help="Eg: RelWithDebInfo")
+    parser.add_argument("--ort_build_path", required=True,
+                        help="ORT build directory.")
+    parser.add_argument("--native_build_path", required=True,
+                        help="Native build output directory.")
+    parser.add_argument("--packages_path", required=True,
+                        help="Nuget packages output directory.")
+    parser.add_argument("--sources_path", required=True,
+                        help="OnnxRuntime source code root.")
+    parser.add_argument("--commit_id", required=True,
+                        help="The last commit id included in this package.")
     parser.add_argument("--is_release_build", required=False, default=None, type=str,
                         help="Flag indicating if the build is a release build. Accepted values: true/false.")
 
@@ -67,7 +75,8 @@ def generate_project_url(list, project_url):
 
 
 def generate_repo_url(list, repo_url, commit_id):
-    list.append('<repository type="git" url="' + repo_url + '"' + ' commit="' + commit_id + '" />')
+    list.append('<repository type="git" url="' + repo_url +
+                '"' + ' commit="' + commit_id + '" />')
 
 
 def generate_dependencies(list, package_name, version):
@@ -75,15 +84,18 @@ def generate_dependencies(list, package_name, version):
         list.append('<dependencies>')
         # Support .Net Core
         list.append('<group targetFramework="NETCOREAPP">')
-        list.append('<dependency id="Microsoft.ML.OnnxRuntime.Managed"' + ' version="' + version + '"/>')
+        list.append('<dependency id="Microsoft.ML.OnnxRuntime.Managed"' +
+                    ' version="' + version + '"/>')
         list.append('</group>')
         # Support .Net Standard
         list.append('<group targetFramework="NETSTANDARD">')
-        list.append('<dependency id="Microsoft.ML.OnnxRuntime.Managed"' + ' version="' + version + '"/>')
+        list.append('<dependency id="Microsoft.ML.OnnxRuntime.Managed"' +
+                    ' version="' + version + '"/>')
         list.append('</group>')
         # Support .Net Framework
         list.append('<group targetFramework="NETFRAMEWORK">')
-        list.append('<dependency id="Microsoft.ML.OnnxRuntime.Managed"' + ' version="' + version + '"/>')
+        list.append('<dependency id="Microsoft.ML.OnnxRuntime.Managed"' +
+                    ' version="' + version + '"/>')
         list.append('</group>')
 
         list.append('</dependencies>')
@@ -118,13 +130,18 @@ def generate_metadata(list, args):
     generate_owners(metadata_list, 'Microsoft')
     generate_description(metadata_list, 'This package contains native shared library artifacts '
                                         'for all supported platforms of ONNX Runtime.')
-    generate_copyright(metadata_list, '\xc2\xa9 ' + 'Microsoft Corporation. All rights reserved.')
+    generate_copyright(metadata_list, '\xc2\xa9 ' +
+                       'Microsoft Corporation. All rights reserved.')
     generate_tags(metadata_list, 'ONNX ONNX Runtime Machine Learning')
-    generate_icon_url(metadata_list, 'https://go.microsoft.com/fwlink/?linkid=2049168')
+    generate_icon_url(
+        metadata_list, 'https://go.microsoft.com/fwlink/?linkid=2049168')
     generate_license(metadata_list)
-    generate_project_url(metadata_list, 'https://github.com/Microsoft/onnxruntime')
-    generate_repo_url(metadata_list, 'https://github.com/Microsoft/onnxruntime.git', args.commit_id)
-    generate_dependencies(metadata_list, args.package_name, args.package_version)
+    generate_project_url(
+        metadata_list, 'https://github.com/Microsoft/onnxruntime')
+    generate_repo_url(
+        metadata_list, 'https://github.com/Microsoft/onnxruntime.git', args.commit_id)
+    generate_dependencies(
+        metadata_list, args.package_name, args.package_version)
     generate_release_notes(metadata_list)
     metadata_list.append('</metadata>')
 
@@ -140,7 +157,8 @@ def generate_files(list, args):
     is_dml_package = args.package_name == 'Microsoft.ML.OnnxRuntime.DirectML'
     is_windowsai_package = args.package_name == 'Microsoft.AI.MachineLearning'
 
-    includes_cuda = is_cuda_gpu_package or is_cpu_package  # Why does the CPU package ship the cuda provider headers?
+    # Why does the CPU package ship the cuda provider headers?
+    includes_cuda = is_cuda_gpu_package or is_cpu_package
     includes_winml = is_windowsai_package
     includes_directml = (is_dml_package or is_windowsai_package) and (args.target_architecture == 'x64'
                                                                       or args.target_architecture == 'x86')
@@ -257,35 +275,45 @@ def generate_files(list, args):
         # Process props file
         windowsai_props = os.path.join(args.sources_path, 'csharp', 'src', 'Microsoft.ML.OnnxRuntime',
                                        'Microsoft.AI.MachineLearning.props')
-        files_list.append('<file src=' + '"' + windowsai_props + '" target="build\\native" />')
+        files_list.append('<file src=' + '"' +
+                          windowsai_props + '" target="build\\native" />')
         # Process targets files
         windowsai_targets = os.path.join(args.sources_path, 'csharp', 'src', 'Microsoft.ML.OnnxRuntime',
                                          'Microsoft.AI.MachineLearning.targets')
-        files_list.append('<file src=' + '"' + windowsai_targets + '" target="build\\native" />')
+        files_list.append('<file src=' + '"' +
+                          windowsai_targets + '" target="build\\native" />')
         # Process rules files
         windowsai_rules = os.path.join(args.sources_path, 'csharp', 'src', 'Microsoft.ML.OnnxRuntime',
                                        'Microsoft.AI.MachineLearning.Rules.Project.xml')
-        files_list.append('<file src=' + '"' + windowsai_rules + '" target="build\\native" />')
+        files_list.append('<file src=' + '"' +
+                          windowsai_rules + '" target="build\\native" />')
 
     if is_cpu_package or is_cuda_gpu_package or is_dml_package or is_mklml_package:
         # Process props file
-        source_props = os.path.join(args.sources_path, 'csharp', 'src', 'Microsoft.ML.OnnxRuntime', 'props.xml')
+        source_props = os.path.join(
+            args.sources_path, 'csharp', 'src', 'Microsoft.ML.OnnxRuntime', 'props.xml')
         target_props = os.path.join(args.sources_path, 'csharp', 'src', 'Microsoft.ML.OnnxRuntime',
                                     args.package_name + '.props')
         os.system('copy ' + source_props + ' ' + target_props)
-        files_list.append('<file src=' + '"' + target_props + '" target="build\\native" />')
-        files_list.append('<file src=' + '"' + target_props + '" target="build\\netstandard1.1" />')
+        files_list.append('<file src=' + '"' + target_props +
+                          '" target="build\\native" />')
+        files_list.append('<file src=' + '"' + target_props +
+                          '" target="build\\netstandard1.1" />')
 
         # Process targets file
-        source_targets = os.path.join(args.sources_path, 'csharp', 'src', 'Microsoft.ML.OnnxRuntime', 'targets.xml')
+        source_targets = os.path.join(
+            args.sources_path, 'csharp', 'src', 'Microsoft.ML.OnnxRuntime', 'targets.xml')
         target_targets = os.path.join(args.sources_path, 'csharp', 'src', 'Microsoft.ML.OnnxRuntime',
                                       args.package_name + '.targets')
         os.system('copy ' + source_targets + ' ' + target_targets)
-        files_list.append('<file src=' + '"' + target_targets + '" target="build\\native" />')
-        files_list.append('<file src=' + '"' + target_targets + '" target="build\\netstandard1.1" />')
+        files_list.append('<file src=' + '"' +
+                          target_targets + '" target="build\\native" />')
+        files_list.append('<file src=' + '"' + target_targets +
+                          '" target="build\\netstandard1.1" />')
 
     # Process License, ThirdPartyNotices, Privacy, README
-    files_list.append('<file src=' + '"' + os.path.join(args.sources_path, 'LICENSE.txt') + '" target="LICENSE.txt" />')
+    files_list.append('<file src=' + '"' + os.path.join(args.sources_path,
+                                                        'LICENSE.txt') + '" target="LICENSE.txt" />')
     files_list.append('<file src=' + '"' + os.path.join(args.sources_path, 'ThirdPartyNotices.txt') +
                       '" target="ThirdPartyNotices.txt" />')
     files_list.append('<file src=' + '"' + os.path.join(args.sources_path, 'docs', 'Privacy.md') +
@@ -313,12 +341,14 @@ def is_windows():
 
 def main():
     if not is_windows():
-        raise Exception('Native Nuget generation is currently supported only on Windows')
+        raise Exception(
+            'Native Nuget generation is currently supported only on Windows')
 
     # Parse arguments
     args = parse_arguments()
     if (args.is_release_build.lower() != 'true' and args.is_release_build.lower() != 'false'):
-        raise Exception('Only valid options for IsReleaseBuild are: true and false')
+        raise Exception(
+            'Only valid options for IsReleaseBuild are: true and false')
 
     # Generate nuspec
     lines = generate_nuspec(args)
