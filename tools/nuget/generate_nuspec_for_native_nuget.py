@@ -185,6 +185,7 @@ def generate_files(list, args):
                           '" target="build\\native\\include" />')
 
     if includes_winml:
+        opheader_path = 'onnxruntime\\core\\providers\\dml\\dmlexecutionprovider\\inc\\mloperatorauthor.h'
         # Add microsoft.ai.machinelearning headers
         files_list.append('<file src=' + '"' + os.path.join(args.ort_build_path, args.build_config,
                                                             'microsoft.ai.machinelearning.h') +
@@ -200,10 +201,8 @@ def generate_files(list, args):
                                                             'microsoft.ai.machinelearning.winmd') +
                           '" target="lib\\uap10.0\\Microsoft.AI.MachineLearning.winmd" />')
         # Add custom operator headers
-        files_list.append('<file src=' + '"' +
-                          os.path.join(args.sources_path,
-                                       'onnxruntime\\core\\providers\\dml\\dmlexecutionprovider\\inc\\mloperatorauthor.h') +
-                          '" target="build\\native\\include" />')
+        files_list.append('<file src=' + '"' + os.path.join(args.sources_path,
+                                                            opheader_path) + '" target="build\\native\\include" />')
 
     # Process runtimes
     # Process onnxruntime import lib, dll, and pdb
